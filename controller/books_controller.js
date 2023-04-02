@@ -1,79 +1,45 @@
 const express = require('express')
 const book_router = express.Router()
-const manuscript = require('../model/languages')
-
-book_router.get('/seed', (req, res) => {
-    Book.insertMany([{
-        "title": "The Shinobi Initiative",
-        "description": "The reality-bending adventures of a clandestine service agency in the year 2166",
-        "year": 2014,
-        "quantity": 10,
-        "imageURL": "https://imgur.com/LEqsHy5.jpeg"
-      },
-      {
-        "title": "Tess the Wonder Dog",
-        "description": "The tale of a dog who gets super powers",
-        "year": 2007,
-        "quantity": 3,
-        "imageURL": "https://imgur.com/cEJmGKV.jpg"
-      },
-      {
-        "title": "The Annals of Arathrae",
-        "description": "This anthology tells the intertwined narratives of six fairy tales.",
-        "year": 2016,
-        "quantity": 8,
-        "imageURL": "https://imgur.com/VGyUtrr.jpeg"
-      },
-      {
-        "title": "Wâˆ€RP",
-        "description": "A time-space anomaly folds matter from different points in earth's history in on itself, sending six unlikely heroes on a race against time as worlds literally collide.",
-        "year": 2010,
-        "quantity": 4,
-        "imageURL": "https://imgur.com/qYLKtPH.jpeg"
-      }])
-        .then(res.status(200).json({
-            message: 'Seed successful'
-        }))
-        .catch(res.status(400).json({
-            message: 'Seed unsuccessful'
-        }))
+const db = require('../model/models')
+//Delete One ===========
+book_router.delete('/:id', (req, res) => {
+    db.findByIdAndDelete(req.params.id)
+        .then((books) => {
+            res.send('/')
+        })
+        .catch((err) => { console.log(err) })
+})
+//Create Book
+book_router.post('/', (req, res) => {
+    db.create(req.body)
+        .catch(err => {console.log(err)})
+    res.redirect('/')
+})
+//Update Book
+book_router.put('/:id', (req, res) => {
+    db.findByIdAndUpdate(req.params.id)
+        .then((books) => {
+            res.send('/')
+        })
+        .catch((err) => { console.log(err) })
+})
+//Book
+book_router.get('/:id', (req, res) => {
+    db.findById(req.params.id)
+        .then((books) => {
+            res.json(books)
+        })
+        .catch((err) => { console.log(err) })
 })
 
 //All books
-book_router.get('/books', (req,res) => {
-    manuscript.find()
-    .then(foundLanguages => {
-        res.json(foundLanguages)
-    })
-    .catch(res.status(400).json({
-        message: 'Unsucessful to find books'
-    }))
-})
-//Find a specific books
-book_router.get('/:id',(req,res) => {
-    manuscript.findOne({name: req.params.id})
-    .then(foundLanguages => {
-        res.json(foundLanguages)
-    })
-    .catch(res.status(400).json ({
-        message: 'Unable to find book'
-    }))
-
+book_router.get('/', (req, res) => {
+    db.find()
+        .then((books) => {
+            res.json(books)
+        })
+        .catch((err) => { console.log(err) })
 })
 
-//Delete a book
-book_router.delete('/:id',(req,res) => {
-    manuscript.deleteOne({id: req.params.id})
-    .then(res.status().json({
-        message: 'Deleted'
-    }))
-    .catch(res.status(400).json({
-        message: 'Unable to Delete'
-    }))
-})
 
-// book_router.put('/:id', (req,res) => {
-//     manuscript.findOneAndUpdate()
-
-// })
 module.exports = book_router

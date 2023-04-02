@@ -3,8 +3,9 @@ const mongoose = require('mongoose')
 const { Schema } = mongoose 
 
 // schema:
-const languageSchema = new Schema({
-    title: { type: String, required: true },
+const book_Schema = new Schema({
+
+    title:  String, 
     description: String,
     year: Number,
     quantity: Number,
@@ -12,4 +13,4 @@ const languageSchema = new Schema({
 })
 
 // model and export: 
-module.exports = mongoose.model('Language', languageSchema)
+module.exports = mongoose.model('book', book_Schema)
